@@ -42,11 +42,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Constants.cs" />
+    <Compile Include="Components\DataProvider.cs" />
+    <Compile Include="Components\DataProvider\DataProvider.cs" />
+    <Compile Include="Components\Helpers\SingleTone.cs" />
+    <Compile Include="Components\ProxySolver.cs" />
+    <Compile Include="Components\SingleTone.cs" />
+    <Compile Include="Components\WebHelpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

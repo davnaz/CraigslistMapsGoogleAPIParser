@@ -10,6 +10,7 @@ namespace CraigslistMapsGoogleAPIParser
     {
         static void Main(string[] args)
         {
+            
         }
     }
 }
