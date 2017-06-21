@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DbConnectionString" xml:space="preserve">
-    <value>Data Source=rentml.database.windows.net;Initial Catalog=TruliaHomes;Integrated Security=False;User ID=rentml;Password=mlrent-1404;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False</value>
+  <data name="DbCraigslistConnectionString" xml:space="preserve">
+    <value>Data Source=rentml.database.windows.net;Initial Catalog=CraigsList;Integrated Security=False;User ID=rentml;Password=mlrent-1404;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True</value>
     <comment>Эта строка нужна для подключения к БД FT на удаленном серваке</comment>
   </data>
   <data name="MaxProxyPing" xml:space="preserve">
@@ -129,7 +129,7 @@
     <value>proxylist.txt</value>
   </data>
   <data name="MaxDegreeOfParallelism" xml:space="preserve">
-    <value>5</value>
+    <value>2</value>
     <comment>Количество потоков. которое будет создавать программа</comment>
   </data>
   <data name="NumberOfLoadRetrying" xml:space="preserve">
@@ -143,10 +143,24 @@
   <data name="GoogleAPIKey" xml:space="preserve">
     <value>AIzaSyArN6iEXHOZRBjvfrnMV3VcqKUvzP7Rm1o</value>
   </data>
-  <data name="BaseLink" xml:space="preserve">
-    <value>https://www.trulia.com</value>
+  <data name="DbCraigslistPlacesConnectionString" xml:space="preserve">
+    <value>Data Source=NOTEBOOK;Integrated Security=True;Initial Catalog=CraigslistPlaces</value>
+    <comment>Локальная БД, куда запишется информация об адресах</comment>
   </data>
-  <data name="GoogleMapsQueryPattern" xml:space="preserve">
-    <value>http://maps.googleapis.com/maps/api/geocode/json?sensor=false&amp;language=en&amp;address=</value>
+  <data name="SP_GetAddressRange" xml:space="preserve">
+    <value>SP_getAddressListByRange</value>
+    <comment>Вытаскивает таблицу с ID, PlaceName и PlaceLink из CraigsList.OffersTable</comment>
+  </data>
+  <data name="SP_InsertPlaceInfo" xml:space="preserve">
+    <value>InsertPlaceInfo</value>
+    <comment>Процедура заполнения информации о месте в БД </comment>
+  </data>
+  <data name="SP_GetPlacesRange" xml:space="preserve">
+    <value>SP_GetPlacesRange</value>
+    <comment>Процедура, которая берет диапазон от @Start до @End записей из ParsedPlaces</comment>
+  </data>
+  <data name="SP_SetParsedJsonInfo" xml:space="preserve">
+    <value>SP_SetParsedJsonInfo</value>
+    <comment>Процедура вставки распарсенного JSON-объекта местоположения</comment>
   </data>
 </root>

@@ -20,11 +20,11 @@ namespace CraigslistMapsGoogleAPIParser.DataProviders
                 SqlConnection sqlConnection = null;
                 if (sqlConnection == null)
                 {
-                    sqlConnection = new SqlConnection(Resources.DbConnectionString);
+                    sqlConnection = new SqlConnection(Resources.DbCraigslistConnectionString);
                 }
                 if (string.IsNullOrEmpty(sqlConnection.ConnectionString))
                 {
-                    sqlConnection.ConnectionString = Resources.DbConnectionString;
+                    sqlConnection.ConnectionString = Resources.DbCraigslistConnectionString;
                 }
                 return sqlConnection;
             }
@@ -83,9 +83,9 @@ namespace CraigslistMapsGoogleAPIParser.DataProviders
         /// <param name="spName">name of the stored procedure</param>
         /// <returns>SQL command</returns>
         /// <remarks></remarks>
-        public SqlCommand CreateSQLCommandForSP(string storedProcedureName)
+        public SqlCommand CreateSQLCommandForSP(string storedProcedureName, string SqlConnectionString)
         {
-            SqlCommand command = new SqlCommand(storedProcedureName, new SqlConnection(Resources.DbConnectionString));
+            SqlCommand command = new SqlCommand(storedProcedureName, new SqlConnection(SqlConnectionString));
             command.CommandType = CommandType.StoredProcedure;
             // command.Connection.Open();
             return command;
@@ -97,9 +97,9 @@ namespace CraigslistMapsGoogleAPIParser.DataProviders
         /// <param name="spName">name of the stored procedure</param>
         /// <returns>SQL command</returns>
         /// <remarks></remarks>
-        public SqlCommand CreateSQLCommand(string query)
+        public SqlCommand CreateSQLCommand(string query, string SqlConnectionString)
         {
-            SqlCommand command = new SqlCommand(query, new SqlConnection(Resources.DbConnectionString));
+            SqlCommand command = new SqlCommand(query, new SqlConnection(SqlConnectionString));
             command.CommandType = CommandType.Text;
             return command;
         }
@@ -146,6 +146,25 @@ namespace CraigslistMapsGoogleAPIParser.DataProviders
         public string SqlParameterName(string parameterName)
         {
             return string.Format("@{0}", parameterName);
+        }
+
+        internal DataSet GetDatasetFromDb(string query,string SQLConnectionString)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmd = CreateSQLCommand(query,SQLConnectionString);
+            da.SelectCommand = cmd;
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            return ds;
+        }
+
+        internal DataSet GetDatasetFromDbByStoredProcedure(SqlCommand SP_Name)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            da.SelectCommand = SP_Name;
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            return ds;
         }
 
         /// <summary>
@@ -291,7 +310,7 @@ namespace CraigslistMapsGoogleAPIParser.DataProviders
         {
             try
             {
-                SqlCommand insertState = Instance.CreateSQLCommandForSP(Resources.SP_InsertState);
+                SqlCommand insertState = Instance.CreateSQLCommandForSP(Resources.SP_InsertState,"");
                 
                 insertState.Parameters.AddWithValue("@StateName", StateName);
                 insertState.Parameters.AddWithValue("@Link", Link);
@@ -303,7 +322,86 @@ namespace CraigslistMapsGoogleAPIParser.DataProviders
                 Console.ReadLine();
             }
         }
+        /// <summary>
+        /// Получает Записи из БД Craigslist 
+        /// </summary>
+        /// <param name="begin">Параметр начального индекса записсей в БД включительно</param>
+        /// <param name="end">Параметр конечного индекса записсей в БД включительно</param>
+        /// <returns>Dataset c записями согласно процедуре</returns>
+        public DataSet GetDataset(long begin, long end)
+        {
+            SqlConnection conn = new SqlConnection(Resources.DbCraigslistConnectionString);
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmd = conn.CreateCommand();
+            cmd.CommandText = $"EXEC [dbo].[{Resources.SP_GetAddressRange}] @BEGIN = {begin}, @END = {end}";
+            da.SelectCommand = cmd;
+            DataSet ds = new DataSet();
+
+            conn.Open();
+            da.Fill(ds);
+            conn.Close();
+
+            return ds;
+        }
+        /// <summary>
+        /// Получает Записи из БД CraigslistPlaces 
+        /// </summary>
+        /// <param name="begin">Параметр начального индекса записсей в БД включительно</param>
+        /// <param name="end">Параметр конечного индекса записсей в БД включительно</param>
+        /// <returns>Dataset c записями о местоположении</returns>
+        public DataSet GetDatasetFromCraigslistPlaces(long begin, long end)
+        {
+            SqlConnection conn = new SqlConnection(Resources.DbCraigslistPlacesConnectionString);
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmd = conn.CreateCommand();
+            cmd.CommandText = $"EXEC [dbo].[{Resources.SP_GetPlacesRange}] @Start = {begin}, @End = {end}";
+            da.SelectCommand = cmd;
+            DataSet ds = new DataSet();
+
+            conn.Open();
+            da.Fill(ds);
+            conn.Close();
+
+            return ds;
+        }
 
 
+
+        internal long GetCount()
+        {
+            SqlConnection conn = new SqlConnection(Resources.DbCraigslistConnectionString);
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmd = conn.CreateCommand();
+            cmd.CommandText = $"SELECT MAX(ID) FROM Offerstable";
+            conn.Open();
+
+            SqlDataReader rd = cmd.ExecuteReader();
+            long colsCount = -1;
+            if (rd.HasRows)
+            {
+                rd.Read(); // read first row                
+                colsCount = rd.GetInt64(0);
+            }
+            conn.Close();
+            return colsCount;
+        }
+        internal long GetPlacesCount()
+        {
+            SqlConnection conn = new SqlConnection(Resources.DbCraigslistPlacesConnectionString);
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmd = conn.CreateCommand();
+            cmd.CommandText = $"SELECT MAX(ID) FROM ParsedPlaces";
+            conn.Open();
+
+            SqlDataReader rd = cmd.ExecuteReader();
+            long colsCount = -1;
+            if (rd.HasRows)
+            {
+                rd.Read(); // read first row                
+                colsCount = rd.GetInt64(0);
+            }
+            conn.Close();
+            return colsCount;
+        }
     }
 }

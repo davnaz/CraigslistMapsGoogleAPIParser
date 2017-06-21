@@ -79,7 +79,7 @@ namespace CraigslistMapsGoogleAPIParser.Components
         private bool ExcludeProxyByTestLink(WebProxy i)
         {
             Console.WriteLine(i.Address);
-            return WebHelpers.GetHtmlThrowProxy("www.trulia.com", i) == Constants.WebAttrsNames.NotFound ? true : false;           
+            return WebHelpers.GetWebResponceContentThrowProxy("www.trulia.com", i) == Constants.WebAttrsNames.NotFound ? true : false;           
         }
 
         /// <summary>

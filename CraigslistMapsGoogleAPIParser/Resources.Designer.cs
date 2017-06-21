@@ -8,8 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CraigslistMapsGoogleAPIParser
-{
+namespace CraigslistMapsGoogleAPIParser {
     using System;
     
     
@@ -23,7 +22,7 @@ namespace CraigslistMapsGoogleAPIParser
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -37,10 +36,10 @@ namespace CraigslistMapsGoogleAPIParser
         ///   Возвращает кэшированный экземпляр ResourceManager, использованный этим классом.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FT.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CraigslistMapsGoogleAPIParser.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -52,7 +51,7 @@ namespace CraigslistMapsGoogleAPIParser
         ///   обращений к ресурсу с помощью этого класса ресурса со строгой типизацией.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -62,27 +61,36 @@ namespace CraigslistMapsGoogleAPIParser
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на https://www.trulia.com.
+        ///   Ищет локализованную строку, похожую на Data Source=rentml.database.windows.net;Initial Catalog=CraigsList;Integrated Security=False;User ID=rentml;Password=mlrent-1404;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True.
         /// </summary>
-        internal static string BaseLink {
+        public static string DbCraigslistConnectionString {
             get {
-                return ResourceManager.GetString("BaseLink", resourceCulture);
+                return ResourceManager.GetString("DbCraigslistConnectionString", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Data Source=rentml.database.windows.net;Initial Catalog=TruliaHomes;Integrated Security=False;User ID=rentml;Password=mlrent-1404;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False.
+        ///   Ищет локализованную строку, похожую на Data Source=NOTEBOOK;Integrated Security=True;Initial Catalog=CraigslistPlaces.
         /// </summary>
-        internal static string DbConnectionString {
+        public static string DbCraigslistPlacesConnectionString {
             get {
-                return ResourceManager.GetString("DbConnectionString", resourceCulture);
+                return ResourceManager.GetString("DbCraigslistPlacesConnectionString", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на 5.
+        ///   Ищет локализованную строку, похожую на AIzaSyArN6iEXHOZRBjvfrnMV3VcqKUvzP7Rm1o.
         /// </summary>
-        internal static string MaxDegreeOfParallelism {
+        public static string GoogleAPIKey {
+            get {
+                return ResourceManager.GetString("GoogleAPIKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 2.
+        /// </summary>
+        public static string MaxDegreeOfParallelism {
             get {
                 return ResourceManager.GetString("MaxDegreeOfParallelism", resourceCulture);
             }
@@ -91,7 +99,7 @@ namespace CraigslistMapsGoogleAPIParser
         /// <summary>
         ///   Ищет локализованную строку, похожую на 400.
         /// </summary>
-        internal static string MaxProxyPing {
+        public static string MaxProxyPing {
             get {
                 return ResourceManager.GetString("MaxProxyPing", resourceCulture);
             }
@@ -100,7 +108,7 @@ namespace CraigslistMapsGoogleAPIParser
         /// <summary>
         ///   Ищет локализованную строку, похожую на 3.
         /// </summary>
-        internal static string NumberOfLoadRetrying {
+        public static string NumberOfLoadRetrying {
             get {
                 return ResourceManager.GetString("NumberOfLoadRetrying", resourceCulture);
             }
@@ -109,27 +117,54 @@ namespace CraigslistMapsGoogleAPIParser
         /// <summary>
         ///   Ищет локализованную строку, похожую на proxylist.txt.
         /// </summary>
-        internal static string ProxyList {
+        public static string ProxyList {
             get {
                 return ResourceManager.GetString("ProxyList", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на SP_getAddressListByRange.
+        /// </summary>
+        public static string SP_GetAddressRange {
+            get {
+                return ResourceManager.GetString("SP_GetAddressRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на SP_GetPlacesRange.
+        /// </summary>
+        public static string SP_GetPlacesRange {
+            get {
+                return ResourceManager.GetString("SP_GetPlacesRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на InsertPlaceInfo.
+        /// </summary>
+        public static string SP_InsertPlaceInfo {
+            get {
+                return ResourceManager.GetString("SP_InsertPlaceInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на InsertState.
         /// </summary>
-        internal static string SP_InsertState {
+        public static string SP_InsertState {
             get {
                 return ResourceManager.GetString("SP_InsertState", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на .
+        ///   Ищет локализованную строку, похожую на SP_SetParsedJsonInfo.
         /// </summary>
-        internal static string String1 {
+        public static string SP_SetParsedJsonInfo {
             get {
-                return ResourceManager.GetString("String1", resourceCulture);
+                return ResourceManager.GetString("SP_SetParsedJsonInfo", resourceCulture);
             }
         }
     }
