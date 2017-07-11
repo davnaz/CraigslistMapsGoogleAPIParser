@@ -51,11 +51,11 @@ namespace CraigslistMapsGoogleAPIParser.Components
             {
                 if (PlaceLink.Contains("q=loc"))
                 {
-                    JSON = AddressParser.GetJsonMapResponse(PlaceLink.Replace(Constants.GoogleStringRequestInDb.ByName, String.Empty), Constants.TypeOfMapGrabbing.ByAddress);
+                    JSON = AddressParser.GetJsonMapResponseThrowProxy(PlaceLink.Replace(Constants.GoogleStringRequestInDb.ByName, String.Empty), Constants.TypeOfMapGrabbing.ByAddress);
                 }
                 else if (PlaceLink.Contains("maps/preview"))
                 {
-                    JSON = AddressParser.GetJsonMapResponse(PlaceLink.Replace(Constants.GoogleStringRequestInDb.ByLatlng, String.Empty).Replace(",16z",""), Constants.TypeOfMapGrabbing.ByLatlng);
+                    JSON = AddressParser.GetJsonMapResponseThrowProxy(PlaceLink.Replace(Constants.GoogleStringRequestInDb.ByLatlng, String.Empty).Replace(",16z",""), Constants.TypeOfMapGrabbing.ByLatlng);
                 }
                 else
                 {

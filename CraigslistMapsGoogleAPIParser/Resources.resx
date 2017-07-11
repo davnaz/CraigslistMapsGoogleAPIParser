@@ -129,7 +129,7 @@
     <value>proxylist.txt</value>
   </data>
   <data name="MaxDegreeOfParallelism" xml:space="preserve">
-    <value>2</value>
+    <value>20</value>
     <comment>Количество потоков. которое будет создавать программа</comment>
   </data>
   <data name="NumberOfLoadRetrying" xml:space="preserve">
@@ -144,7 +144,7 @@
     <value>AIzaSyArN6iEXHOZRBjvfrnMV3VcqKUvzP7Rm1o</value>
   </data>
   <data name="DbCraigslistPlacesConnectionString" xml:space="preserve">
-    <value>Data Source=NOTEBOOK;Integrated Security=True;Initial Catalog=CraigslistPlaces</value>
+    <value>Data Source=rentml.database.windows.net;Initial Catalog=CraigsList;Integrated Security=False;User ID=rentml;Password=mlrent-1404;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True</value>
     <comment>Локальная БД, куда запишется информация об адресах</comment>
   </data>
   <data name="SP_GetAddressRange" xml:space="preserve">

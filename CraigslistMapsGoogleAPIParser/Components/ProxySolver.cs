@@ -61,14 +61,14 @@ namespace CraigslistMapsGoogleAPIParser.Components
                                 .WithDegreeOfParallelism(Convert.ToInt32(Resources.MaxDegreeOfParallelism))
                                 .ToList();
             proxyList = filteredProxies;
-            Console.WriteLine("Check by ping was success for {0} proxies.",proxyList.Count);
-            filteredProxies =
-                    proxyList.AsParallel()
-                                .Where(i => !ExcludeProxyByTestLink(i))
-                                .WithDegreeOfParallelism(Convert.ToInt32(Resources.MaxDegreeOfParallelism))
-                                .ToList();
-            proxyList = filteredProxies;
-            Console.WriteLine("Check by the test link was success for {0} proxies.", proxyList.Count);
+            //Console.WriteLine("Check by ping was success for {0} proxies.",proxyList.Count);
+            //filteredProxies =
+            //        proxyList.AsParallel()
+            //                    .Where(i => !ExcludeProxyByTestLink(i))
+            //                    .WithDegreeOfParallelism(Convert.ToInt32(Resources.MaxDegreeOfParallelism))
+            //                    .ToList();
+            //proxyList = filteredProxies;
+            //Console.WriteLine("Check by the test link was success for {0} proxies.", proxyList.Count);
             File.AppendAllText("log.txt", String.Format("Количество рабочих прокси на {1}: {0}\n", proxyList.Count, DateTime.Now));
             //proxyList.RemoveAll(i => ExcludeProxyByPing(i));
             //Console.WriteLine("Отфильтрованы по пингу в {0}мс:",Resources.MaxProxyPing);
@@ -116,15 +116,19 @@ namespace CraigslistMapsGoogleAPIParser.Components
 
         private int increaseProxyIndex() //приращивваем индекс текущего прокси
         {
-            if(currentProxyIndex == proxyList.Count - 1) //если мы достигли конца списка
+            lock (this)
             {
-                currentProxyIndex = 0;
+                if (currentProxyIndex == proxyList.Count - 1) //если мы достигли конца списка
+                {
+                    currentProxyIndex = 0;
+                }
+                else
+                {
+                    currentProxyIndex++;
+                }
+                return currentProxyIndex;
             }
-            else
-            {
-                currentProxyIndex++;
-            }
-            return currentProxyIndex;
+            
         }
 
         private bool ExcludeProxyByPing(WebProxy currentProxy)

@@ -70,7 +70,7 @@ namespace CraigslistMapsGoogleAPIParser {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Data Source=NOTEBOOK;Integrated Security=True;Initial Catalog=CraigslistPlaces.
+        ///   Ищет локализованную строку, похожую на Data Source=rentml.database.windows.net;Initial Catalog=CraigsList;Integrated Security=False;User ID=rentml;Password=mlrent-1404;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True.
         /// </summary>
         public static string DbCraigslistPlacesConnectionString {
             get {
@@ -88,7 +88,7 @@ namespace CraigslistMapsGoogleAPIParser {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на 2.
+        ///   Ищет локализованную строку, похожую на 20.
         /// </summary>
         public static string MaxDegreeOfParallelism {
             get {

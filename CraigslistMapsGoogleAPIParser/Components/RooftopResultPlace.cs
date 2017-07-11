@@ -38,7 +38,7 @@ namespace CraigslistMapsGoogleAPIParser.Components
             GeocodeJsonObject.Result res = o.results.Find(i => i.geometry.location_type == Constants.GoogleLocationTypes.ROOFTOP || i.geometry.location_type == Constants.GoogleLocationTypes.RANGE_INTERPOLATED);
             if(res == null)
             {
-                Console.WriteLine("Нет точных данных в результатах.");
+                Console.WriteLine("Нет точных данных в результатах., {0}",ID_);
                 return;
             }
             res.address_components.ForEach(i =>
@@ -58,8 +58,16 @@ namespace CraigslistMapsGoogleAPIParser.Components
                         locality_short = i.short_name;
                         break;
                     case Constants.GoogleAddressComponentsTypes.postal_code:
-                        postal_code =       Convert.ToInt32(i.long_name );
-                        postal_code_short = Convert.ToInt32(i.short_name);
+                        try
+                        {
+                            postal_code = Convert.ToInt32(i.long_name);
+                            postal_code_short = Convert.ToInt32(i.short_name);
+                        }
+                        catch(Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                        
                         break;
                     case Constants.GoogleAddressComponentsTypes.postal_code_suffix:
                         postal_code_suffix = Convert.ToInt32(i.long_name);

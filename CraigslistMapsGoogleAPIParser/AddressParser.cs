@@ -18,7 +18,12 @@ namespace CraigslistMapsGoogleAPIParser
         WebProxy proxy;
         public AddressParser()
         {
-           // proxy = ProxySolver.Instance.getNewProxy();
+           //proxy = ProxySolver.Instance.getNewProxy();
+        }
+
+        private WebProxy UpdateInternalProxy()
+        {
+            return proxy = ProxySolver.Instance.getNewProxy();
         }
         #region Методы для получения данных местоположения через Google Maps Geocoding API
         /// <summary>
@@ -39,7 +44,7 @@ namespace CraigslistMapsGoogleAPIParser
             return WebHelpers.GetWebResponceContent(GETRequestLink);
         }
 
-        public string GetJsonMapResponseThrowProxy(string addressOrLatlng, Constants.TypeOfMapGrabbing type, string apiKey = "")
+        public static string GetJsonMapResponseThrowProxy(string addressOrLatlng, Constants.TypeOfMapGrabbing type, string apiKey = "")
         {
             string GETRequestLink = type == Constants.TypeOfMapGrabbing.ByAddress ? Constants.GoogleRequestParams.AddressMapsQueryPattern + addressOrLatlng.Replace(" ", "+") :
                 Constants.GoogleRequestParams.LatlngMapsQueryPattern + addressOrLatlng; //в адресе заменяем пробелы на плюсы для соответствия формату запроса + исходя из типа, задаем правильный текст запроса
@@ -47,7 +52,22 @@ namespace CraigslistMapsGoogleAPIParser
             {
                 GETRequestLink += "&key=" + apiKey;
             }
-            return WebHelpers.GetWebResponceContentThrowProxy(GETRequestLink, proxy);
+            string JsonResponse;
+            while (true) //получаем корректный ответ до победного конца
+            {
+
+                JsonResponse = WebHelpers.GetWebResponceContentThrowProxy(GETRequestLink.Replace("+%C3%A2%C2%80%C2%A2", ""), ProxySolver.Instance.getNewProxy());
+                GeocodeJsonObject o = ReadJsonToObject(JsonResponse);
+                if(o != null)
+                {
+                    if (o.status != Constants.GoogleMapsGeocodingStatusCodes.OVER_QUERY_LIMIT)
+                    {
+                        break;
+                    }
+                }
+                          
+            }
+            return JsonResponse;
         }
 
         #endregion
@@ -78,12 +98,25 @@ namespace CraigslistMapsGoogleAPIParser
             options.MaxDegreeOfParallelism = Convert.ToInt32(Resources.MaxDegreeOfParallelism);
             long CraigslistCount = DataProviders.DataProvider.Instance.GetCount(); //смотрим, сколько записей в таблице
             Console.WriteLine(CraigslistCount);
-            int range = 100;
-            for (int i = 7500; i <= CraigslistCount; i += range)
+            int range = 1000;
+            int startPosition = 1;
+            try
             {
-                if ((i - 1) % 2000 == 0)
+                string p = File.ReadAllText("position.txt");
+                startPosition = int.Parse(p);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                startPosition = 450001;
+            }
+            for (int i = startPosition; i <= CraigslistCount; i += range)
+            {
+                if ((i) % 1000 == 0)
                 {
-                    Console.WriteLine("Now {0} cells", i - 1);
+                    Console.WriteLine("Now {0} cells", i);
+                    string pos = i.ToString();
+                    File.WriteAllText("position.txt", pos);
                 }
                 List<AddressInfo> adresses;
                 if (i + range > CraigslistCount)
@@ -94,24 +127,24 @@ namespace CraigslistMapsGoogleAPIParser
                 {
                     adresses = GetAddressesByRange(i, i + range - 1);
                 }
-                for(int j = 0;j < adresses.Count;j++)
-                {
-                    Console.WriteLine(adresses[j].PlaceLink);
-                    adresses[j].ParseJSON();
-                    if(adresses[j].JSON != String.Empty)
+                Parallel.ForEach(adresses, options, address => {
+                    
+                        //Console.WriteLine(adresses[j].PlaceLink);
+                        address.ParseJSON();
+                    if(address.JSON != String.Empty && address.JSON != Constants.WebAttrsNames.NotFound)
                     {
-                        if (AddressParser.ReadJsonToObject(adresses[j].JSON).status == Constants.GoogleMapsGeocodingStatusCodes.OVER_QUERY_LIMIT)
+                        if (AddressParser.ReadJsonToObject(address.JSON).status == Constants.GoogleMapsGeocodingStatusCodes.OVER_QUERY_LIMIT)
                         {
                             return;
                         }
-                    }                    
-                    adresses[j].InsertIntoDb();
-                }
+                    }
+                        address.InsertIntoDb();
+                });
                 //Parallel.ForEach(adresses,options, address => {
                 //    address.ParseJSON();
                 //    address.InsertIntoDb();
                 //});
-                    
+
             }           
 
         }
@@ -139,7 +172,15 @@ namespace CraigslistMapsGoogleAPIParser
             //DataContractJsonSerializer ser = new DataContractJsonSerializer(deserializedUser.GetType());
             //deserializedUser = ser.ReadObject(ms) as User;
             //ms.Close();
-            deserializedObject = JsonConvert.DeserializeObject<GeocodeJsonObject>(json);
+            try
+            {
+                deserializedObject = JsonConvert.DeserializeObject<GeocodeJsonObject>(json);
+            }
+            catch
+            {
+                deserializedObject = null;
+            }
+            
             return deserializedObject;
         }
         /// <summary>
@@ -149,8 +190,8 @@ namespace CraigslistMapsGoogleAPIParser
         {
             long CraigslistCount = DataProviders.DataProvider.Instance.GetPlacesCount(); //смотрим, сколько записей в таблице
             Console.WriteLine(CraigslistCount);
-            int range = 100;
-            for (int i = 1; i <= CraigslistCount; i += range)
+            int range = 10000;
+            for (int i = 638000; i <= CraigslistCount; i += range)
             {
                 if ((i - 1) % 2000 == 0)
                 {
@@ -165,21 +206,25 @@ namespace CraigslistMapsGoogleAPIParser
                 {
                     adresses = GetJSONPlacesFromDb(i, i + range - 1);
                 }
-                for (int j = 0; j < adresses.Count; j++)
+                //for (int j = 0; j < adresses.Count; j++)
+                //{
+                ParallelOptions options = new ParallelOptions();
+                options.MaxDegreeOfParallelism = Convert.ToInt32(Resources.MaxDegreeOfParallelism);
+                Parallel.ForEach(adresses, options, address =>
                 {
                     //Console.WriteLine(adresses[j].PlaceLink);
-                    if (adresses[j].PlaceLink != String.Empty && adresses[j].PlaceLink != Constants.WebAttrsNames.NotFound)
+                    if (address.PlaceLink != String.Empty && address.PlaceLink != Constants.WebAttrsNames.NotFound)
                     {
-                        GeocodeJsonObject o = ReadJsonToObject(adresses[j].PlaceLink);
-                        RooftopResultPlace res = new RooftopResultPlace(o, adresses[j].ID);
+                        GeocodeJsonObject o = ReadJsonToObject(address.PlaceLink);
+                        RooftopResultPlace res = new RooftopResultPlace(o, address.ID);
 
                         res.InsertToDb();
                     }
                     else
                     {
-                        Console.WriteLine("Запись с номером ID={0} не содержит JSON");
+                        Console.WriteLine("Запись с номером ID={0} не содержит JSON", address.ID);
                     }
-                }
+                });
                 
 
             }

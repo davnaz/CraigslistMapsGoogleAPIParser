@@ -23,7 +23,7 @@ namespace CraigslistMapsGoogleAPIParser.Components
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(link);
             req.Method = "GET";
             req.Timeout = 2000;
-            req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+            //req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
             req.UserAgent = "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
             req.KeepAlive = true;
             req.Proxy = currentProxy;
@@ -35,9 +35,9 @@ namespace CraigslistMapsGoogleAPIParser.Components
             req.AllowAutoRedirect = true;
             try
             {
-                //Console.WriteLine("Получаю страницу...");
+                Console.WriteLine("Получаю страницу...");
                 HttpWebResponse res = (HttpWebResponse)req.GetResponse();
-                //Console.WriteLine(res.StatusCode + " , " + (int)res.StatusCode);
+                Console.WriteLine(res.StatusCode + " , " + (int)res.StatusCode);
                 System.IO.Stream ReceiveStream = res.GetResponseStream();
                 System.IO.StreamReader sr2 = new System.IO.StreamReader(ReceiveStream, Encoding.UTF8);
                 //Кодировка указывается в зависимости от кодировки ответа сервера
@@ -52,8 +52,9 @@ namespace CraigslistMapsGoogleAPIParser.Components
                 }
                 return htmlString;
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return Constants.WebAttrsNames.NotFound;
             }
         }
@@ -100,7 +101,7 @@ namespace CraigslistMapsGoogleAPIParser.Components
             req.AllowAutoRedirect = true;
             try
             {
-                Console.WriteLine("Получаю страницу..." + link);
+                //Console.WriteLine("Получаю страницу..." + link);
                 HttpWebResponse res = (HttpWebResponse)req.GetResponse();
                 //Console.WriteLine(res.StatusCode + " , " + (int)res.StatusCode);
                 System.IO.Stream ReceiveStream = res.GetResponseStream();

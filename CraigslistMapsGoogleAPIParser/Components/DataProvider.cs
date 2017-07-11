@@ -57,7 +57,8 @@ namespace CraigslistMapsGoogleAPIParser.DataProviders
             }
             catch (SqlException ex)
             {
-                throw new Exception(ex.Message, ex);
+                //throw new Exception(ex.Message, ex);
+                Console.WriteLine(ex.Message);
             }
             finally
             {
